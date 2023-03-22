@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  email       String     @unique
+  password    String
+  createdAt   DateTime?  @default(now())
+  updatedAt   DateTime?  @updatedAt
+  Community   Community? @relation(fields: [communityId], references: [id])
+  communityId String?    @db.ObjectId
+}
+
+model Book {
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  genre           String
+  ISBN            String
+  publisher       String
+  publicationDate DateTime
+  createdAt       DateTime?    @default(now())
+  updatedAt       DateTime?    @updatedAt
+  ReadingGoal     ReadingGoal? @relation(fields: [readingGoalId], references: [id])
+  readingGoalId   String?      @db.ObjectId
+  BookAuthor      BookAuthor[]
+}
+
+model Author {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  createdAt  DateTime?    @default(now())
+  updatedAt  DateTime?    @updatedAt
+  BookAuthor BookAuthor[]
+  bookId     String?      @db.ObjectId
+}
+
+model BookAuthor {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  authorId String  @db.ObjectId
+  bookId   String  @db.ObjectId
+  author   Author? @relation(fields: [authorId], references: [id])
+  book     Book?   @relation(fields: [bookId], references: [id])
+}
+
+model BookReview {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  rating    Int
+  review    String
+  userId    String
+  bookId    String
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model ReadingGoal {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  goalAmount Int
+  booksRead  Book[]
+  userId     String
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+}
+
+model BookBorrowing {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  borrower   String
+  bookId     String
+  borrowedOn DateTime
+  dueOn      DateTime
+  returnedOn DateTime?
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+}
+
+model BookLocation {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  bookId    String
+  location  String
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Message {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  sender    String
+  receiver  String
+  content   String
+  sentAt    DateTime
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Community {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  members     User[]
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+}
+
+model CommunityBook {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  bookId      String
+  communityId String
+  addedBy     String
+  addedOn     DateTime
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+}

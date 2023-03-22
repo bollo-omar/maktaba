@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "es2016",
+        "module": "commonjs",
+        "baseUrl": "./src",
+        "paths": {
+            "@/user/*": ["user/*"],
+            "@/utils/*": ["utils/*"],
+            "@/book": ["book/*"],
+            "@/logging/*": ["logging/*"],
+            "@/middleware/*": ["middleware/*"]
+        },
+        "outDir": "dist",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true
+    }
+}
